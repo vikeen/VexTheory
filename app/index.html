@@ -18,23 +18,29 @@
   </head>
   <body>
 
-    <div class="hero-unit">
-      <h1>'Allo, 'Allo!</h1>
-      <p>You now have</p>
-      <ul>
-        <li>HTML5 Boilerplate</li>
-        <li>Sass</li>
-      </ul>
-    </div>
+    <canvas width="700" height="100"></canvas>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/vexflow/releases/vexflow-debug.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
     <!-- build:js scripts/main.js -->
     <script src="scripts/main.pkgd.js"></script>
     <!-- endbuild -->
+
+    <script>
+    /* jshint ignore:start */
+    var canvas = $('canvas')[0];
+    var renderer = new Vex.Flow.Renderer(canvas,
+      Vex.Flow.Renderer.Backends.CANVAS);
+
+    var ctx = renderer.getContext();
+    var stave = new Vex.Flow.Stave(10, 0, 500);
+    stave.addClef("treble").setContext(ctx).draw();
+    /* jshint ignore:end */
+    </script>
 </body>
 </html>

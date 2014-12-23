@@ -1,7 +1,7 @@
 VexTheory
 ==================
 
-Music theory wrapper for Vexflow(https://github.com/0xfe/vexflow)
+Music theory wrapper for [Vexflow](https://github.com/0xfe/vexflow)
 
 # Usage
 

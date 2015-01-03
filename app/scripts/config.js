@@ -19,5 +19,5 @@ module.exports = {
     'M7': 11,
     'P8': 12
   },
-  'strings': ['E', 'B', 'G', 'D', 'A', 'E']
+  'strings': ['E', 'A', 'D', 'G', 'B', 'E']
 }

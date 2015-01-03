@@ -1,4 +1,3 @@
-/* jshint ignore:start */
-var VexTheory = {};
-
-/* jshint ignore:end */
+global.VexTheory = {
+  'scale': require('./constructors/scale')
+}

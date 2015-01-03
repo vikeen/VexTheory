@@ -1,24 +1,19 @@
-(function(config) {
-  'use strict';
+var config = require('../config');
 
-  var currentNoteIndex;
-
-  var Scale = function(key, name, options) {
-    this.options = options || {};
-    this.key = key;
-    this.name = name;
-    this.notes = [key];
-    buildNotes(this);
-  };
+var Scale = function(key, name, options) {
+  this.options = options || {};
+  this.key = key;
+  this.name = name;
+  this.notes = [key];
 
   /*
    * Build an interal array to hold the notes of the scale
    * @return {void}
    */
-  var buildNotes = function(scale) {
-    for (var i = 1; i < config.scales[scale.name].length - 1; i++) {
-      currentNoteIndex = i;
-      scale.notes.push(getNextNote(scale));
+  this.buildNotes = function() {
+    for (var i = 1; i < config.scales[this.name].length - 1; i++) {
+      this.currentNoteIndex = i;
+      this.notes.push(this.getNextNote());
     }
   };
 
@@ -26,11 +21,11 @@
    * Get the array index of the root note of the scale
    * @return {integer} - the index of the next note in the scale
    */
-  var getRootNoteIndex = function(scale) {
+  this.getRootNoteIndex = function() {
     for (var i = 0; i < config.notes.length; i++) {
       var possibleRootNotes = config.notes[i].split('/');
-      if (possibleRootNotes[0] === scale.key ||
-        possibleRootNotes[1] === scale.key) {
+      if (possibleRootNotes[0] === this.key ||
+        possibleRootNotes[1] === this.key) {
         return i;
       }
     }
@@ -40,9 +35,9 @@
    * Get the array index of the next note of the scale
    * @return {integer} - the index of the next note in the scale
    */
-  var getNextNoteIndex = function(scale) {
-    var interval = config.scales[scale.name][currentNoteIndex],
-      result = getRootNoteIndex(scale) + config.intervals[interval];
+  this.getNextNoteIndex = function() {
+    var interval = config.scales[this.name][this.currentNoteIndex],
+      result = this.getRootNoteIndex() + config.intervals[interval];
 
     if (result >= config.notes.length) {
       result -= config.notes.length;
@@ -55,51 +50,48 @@
    * Initialization
    * @return {void}
    */
-  var getPreviousNote = function(scale) {
-    return scale.notes[scale.notes.length - 1];
+  this.getPreviousNote = function() {
+    return this.notes[this.notes.length - 1];
   };
 
   /*
    * Get the possible next notes of the scale. This will not distinquish between which accidental or scale degree is needed
    * @return {string} - "C" or "C#/Db"
    */
-  var getPossibleNextNotes = function(scale) {
-    return config.notes[getNextNoteIndex(scale)].split('/');
+  this.getPossibleNextNotes = function() {
+    return config.notes[this.getNextNoteIndex()].split('/');
   };
 
   /*
    * Get the exact note of the scale.
    * @return {string} - "C" or "C#"
    */
-  var getNextNote = function(scale) {
-    if (getPossibleNextNotes(scale).length > 1) {
-      var noteRegexPattern = new RegExp(getPossibleNextNotes(scale)[0].charAt(0));
+  this.getNextNote = function() {
+    if (this.getPossibleNextNotes().length > 1) {
+      var noteRegexPattern = new RegExp(this.getPossibleNextNotes()[0].charAt(0));
 
-      if (noteRegexPattern.test(getPreviousNote(scale))) {
-        return getPossibleNextNotes(scale)[1];
+      if (noteRegexPattern.test(this.getPreviousNote())) {
+        return this.getPossibleNextNotes()[1];
       }
 
     }
-    return getPossibleNextNotes(scale)[0];
+    return this.getPossibleNextNotes()[0];
   };
 
   /*
-   * Exposed functions
+   * Standard out debugging for the scale
+   * @return {void}
    */
-  Scale.prototype = {
-
-    /*
-     * Standard out debugging for the scale
-     * @return {void}
-     */
-    print: function() {
-      console.log(this.key, this.name, this.notes);
-      return this;
-    }
+  this.print = function() {
+    console.log(this.key, this.name, this.notes);
+    return this;
   };
 
-  VexTheory.Scale = {};
-  VexTheory.Scale.create = function(key, name, options) {
-    return new Scale(key, name, options);
-  };
-})(VexTheory.Config);
+  this.buildNotes();
+
+  return this;
+};
+
+module.exports = function(key, name, options) {
+  return new Scale(key, name, options);
+}

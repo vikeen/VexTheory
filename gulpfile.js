@@ -15,13 +15,12 @@ gulp.task('styles', function () {
     .pipe(gulp.dest('.tmp/styles'));
 });
 
-gulp.task('scripts', function () {
-  return gulp.src(['app/scripts/main-start.js',
-                   'app/scripts/main.js',
-                   'app/scripts/config.js',
-                   'app/scripts/constructors/scale.js',
-                   'app/scripts/main-end.js'])
-    .pipe($.concat('main.pkgd.js'))
+gulp.task('scripts', function() {
+  gulp.src('app/scripts/main.js') // Single entry point to browserify
+    .pipe($.browserify({
+      insertGlobals : true,
+      debug : !gulp.env.production
+    }))
     .pipe(gulp.dest('.tmp/scripts'));
 });
 
@@ -55,7 +54,7 @@ gulp.task('connect', ['styles', 'scripts'], function () {
     .use(serveStatic('.tmp'))
     .use(serveStatic('app'))
     // paths to node_modules should be relative to the current file
-    // e.g. in app/index.html you should use ../node_modules
+    // e.g. in app/index.html you should use ../node_modulesnpm install --save-dev gulp-browserify
     .use('/node_modules', serveStatic('node_modules'))
     .use(serveIndex('app'));
 
@@ -78,7 +77,6 @@ gulp.task('watch', ['connect'], function () {
     'app/*.html',
     '.tmp/styles/**/*.css',
     'app/scripts/**/*.js',
-    'app/images/**/*'
   ]).on('change', $.livereload.changed);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);

@@ -10,27 +10,73 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
 
+    <style>
+      #scaleSelector {
+        display: block;
+      }
+    </style>
   </head>
   <body>
+    <select id="scaleSelector"></select>
 
-    <canvas id="testCanvas" width="700" height="100"></canvas>
+    <!-- testing canvas -->
+    <canvas id="testDiv">
+      tabstave
+        notation=true
+        key=Em time=4/4
 
-    <script src="../node_modules/vexflow/releases/vexflow-debug.js"></script>
+        notes :8 0/6 2/6 3/6 0/5 2/5 3/5 0/4 2/4
+        text  :8, E, F#, G, A, B, C, D, E
+    </canvas>
+
+    <!-- vendor js -->
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/underscore/underscore-min.js"></script>
+    <script src="../node_modules/vextab/releases/vextab-div.js"></script>
 
     <!-- build:js scripts/main.js -->
-    <script src="scripts/main.js"></script>
-    <!-- endbuild -->
+    <script src="scripts/vextheory.js"></script>
 
     <script>
-    /* jshint ignore:start */
-    var canvas = document.getElementById('testCanvas');
-    var renderer = new Vex.Flow.Renderer(canvas,
-      Vex.Flow.Renderer.Backends.CANVAS);
+      function capitaliseFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
 
-    var ctx = renderer.getContext();
-    var stave = new Vex.Flow.Stave(10, 0, 500);
-    stave.addClef("treble").setContext(ctx).draw();
-    /* jshint ignore:end */
+      function renderScaleSelectionOptions() {
+        _.each(_.keys(VexTheory.config.scales), function(scale) {
+
+          var $scaleGroup = $('<optgroup>')
+            .attr('label', capitaliseFirstLetter(scale));
+
+          _.each(VexTheory.config.notes, function(note) {
+            $scaleGroup.append(
+              $('<option>').val(note).text(note)
+            );
+          });
+
+          $('#scaleSelector').append($scaleGroup);
+        });
+      }
+
+      $(function() {
+        renderScaleSelectionOptions();
+
+        // Rendering function
+        var renderVexFlowCanvas = function() {
+          console.log('rendering vex canvas');
+          var myCanvas = document.getElementById('testDiv');
+          renderer = new Vex.Flow.Renderer(myCanvas, Vex.Flow.Renderer.Backends.CANVAS);
+
+          artist = new VexTabDiv.Artist(10, 10, 600, {scale: 1});
+          vextab = new VexTab(artist);
+
+          vextab.parse(myCanvas.textContent);
+          artist.render(renderer);
+        };
+
+        renderVexFlowCanvas();
+        $('#scaleSelector').on('change', renderVexFlowCanvas);
+      });
     </script>
 </body>
 </html>

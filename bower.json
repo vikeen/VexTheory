@@ -1,8 +1,0 @@
-{
-  "name": "VexTheory",
-  "private": true,
-  "dependencies": {
-    "jquery": "~2.1.1",
-    "vexflow": "~1.2.26"
-  }
-}

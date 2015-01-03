@@ -54,9 +54,9 @@ gulp.task('connect', ['styles', 'scripts'], function () {
     .use(require('connect-livereload')({port: 35729}))
     .use(serveStatic('.tmp'))
     .use(serveStatic('app'))
-    // paths to bower_components should be relative to the current file
-    // e.g. in app/index.html you should use ../bower_components
-    .use('/bower_components', serveStatic('bower_components'))
+    // paths to node_modules should be relative to the current file
+    // e.g. in app/index.html you should use ../node_modules
+    .use('/node_modules', serveStatic('node_modules'))
     .use(serveIndex('app'));
 
   require('http').createServer(app)

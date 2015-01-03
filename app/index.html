@@ -13,7 +13,9 @@
   </head>
   <body>
 
-    <canvas width="700" height="100"></canvas>
+    <canvas id="testCanvas" width="700" height="100"></canvas>
+
+    <script src="../node_modules/vexflow/releases/vexflow-debug.js"></script>
 
     <!-- build:js scripts/main.js -->
     <script src="scripts/main.pkgd.js"></script>
@@ -21,7 +23,7 @@
 
     <script>
     /* jshint ignore:start */
-    var canvas = $('canvas')[0];
+    var canvas = document.getElementById('testCanvas');
     var renderer = new Vex.Flow.Renderer(canvas,
       Vex.Flow.Renderer.Backends.CANVAS);
 

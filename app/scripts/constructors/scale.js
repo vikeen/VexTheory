@@ -3,8 +3,12 @@ var config = require('../config');
 var Scale = function(key, name, options) {
   this.options = options || {};
   this.key = key;
-  this.name = name;
+  this.name = name.toLowerCase();
   this.notes = [key];
+
+  if (!config.scales.hasOwnProperty(this.name)) {
+    throw "Invalid scale name provided. Valid values are " + Object.keys(VexTheory.config.scales).toString();
+  }
 
   /*
    * Build an interal array to hold the notes of the scale

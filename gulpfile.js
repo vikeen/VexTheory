@@ -16,10 +16,9 @@ gulp.task('styles', function () {
 });
 
 gulp.task('scripts', function() {
-  gulp.src('app/scripts/main.js') // Single entry point to browserify
+  gulp.src('app/scripts/vextheory.js') // Single entry point to browserify
     .pipe($.browserify({
-      insertGlobals : true,
-      debug : !gulp.env.production
+      insertGlobals : true
     }))
     .pipe(gulp.dest('.tmp/scripts'));
 });
@@ -56,6 +55,7 @@ gulp.task('connect', ['styles', 'scripts'], function () {
     // paths to node_modules should be relative to the current file
     // e.g. in app/index.html you should use ../node_modulesnpm install --save-dev gulp-browserify
     .use('/node_modules', serveStatic('node_modules'))
+    .use('/bower_components', serveStatic('bower_components'))
     .use(serveIndex('app'));
 
   require('http').createServer(app)

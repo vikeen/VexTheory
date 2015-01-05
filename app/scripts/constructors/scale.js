@@ -1,4 +1,7 @@
+'use strict';
+
 var config = require('../config');
+var renderers = require('../renderers/index');
 
 var Scale = function(key, name, options) {
   this.options = options || {};
@@ -6,8 +9,10 @@ var Scale = function(key, name, options) {
   this.name = name.toLowerCase();
   this.notes = [key];
 
+  this.renderer = renderers[options.renderer] || renderers.vextab;
+
   if (!config.scales.hasOwnProperty(this.name)) {
-    throw "Invalid scale name provided. Valid values are " + Object.keys(VexTheory.config.scales).toString();
+    throw 'Invalid scale name provided. Valid values are ' + Object.keys(VexTheory.config.scales).toString();
   }
 
   /*
@@ -83,12 +88,29 @@ var Scale = function(key, name, options) {
   };
 
   /*
+   * Get scale name abbreviation
+   * @return {string} - 'M' or 'm'
+   */
+  this.getScaleNameAbbreviation = function() {
+    switch(this.name) {
+      case 'major':
+        return '';
+      case 'minor':
+        return 'm';
+      default:
+        throw 'Invalid scale name abbreviation mapping';
+    }
+  };
+
+  /*
    * Standard out debugging for the scale
    * @return {void}
    */
-  this.print = function() {
-    console.log(this.key, this.name, this.notes);
-    return this;
+  this.render = function() {
+    return this.renderer.render({
+      'key': this.notes[0] + this.getScaleNameAbbreviation(),
+      'notes': this.notes
+    });
   };
 
   this.buildNotes();
@@ -98,4 +120,4 @@ var Scale = function(key, name, options) {
 
 module.exports = function(key, name, options) {
   return new Scale(key, name, options);
-}
+};

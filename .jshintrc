@@ -1,4 +1,5 @@
 {
+  "node": true,
   "browser": true,
   "esnext": true,
   "bitwise": true,
@@ -17,9 +18,13 @@
   "jquery": true,
   "globals": {
     "VexTheory": true,
+    "VexTab": true,
+    "VexTabDiv": true,
+    "Vex": true,
     "console": true,
     "define": true,
     "describe": true,
-    "it": true
+    "it": true,
+    "_": true
   }
 }

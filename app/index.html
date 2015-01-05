@@ -11,6 +11,11 @@
     <!-- endbuild -->
 
     <style>
+      body {
+        width: 80%;
+        margin: 0 auto;
+        padding-top: 100px;
+      }
       #scaleSelector {
         display: block;
       }
@@ -20,14 +25,7 @@
     <select id="scaleSelector"></select>
 
     <!-- testing canvas -->
-    <canvas id="testDiv">
-      tabstave
-        notation=true
-        key=Em time=4/4
-
-        notes :8 0/6 2/6 3/6 0/5 2/5 3/5 0/4 2/4
-        text  :8, E, F#, G, A, B, C, D, E
-    </canvas>
+    <canvas id="testDiv"></canvas>
 
     <!-- vendor js -->
     <script src="../bower_components/jquery/dist/jquery.min.js"></script>
@@ -38,6 +36,7 @@
     <script src="scripts/vextheory.js"></script>
 
     <script>
+      'use strict';
       function capitaliseFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
       }
@@ -48,14 +47,22 @@
           var $scaleGroup = $('<optgroup>')
             .attr('label', capitaliseFirstLetter(scale));
 
-          _.each(VexTheory.config.notes, function(note) {
-            $scaleGroup.append(
-              $('<option>').val(note).text(note)
-            );
+          _.each(VexTheory.config.notes, function(notes) {
+
+            _.each(notes.split('/'), function(note) {
+              var $noteOption = $('<option>').val(note).text(note);
+              $scaleGroup.append($noteOption);
+            });
           });
 
           $('#scaleSelector').append($scaleGroup);
         });
+      }
+
+      function getVexTheoryScaleString() {
+        var key = $('#scaleSelector :selected').val();
+        var scaleName = $('#scaleSelector :selected').closest('optgroup').attr('label');
+        return VexTheory.scale(key, scaleName, {}).render();
       }
 
       $(function() {
@@ -63,14 +70,13 @@
 
         // Rendering function
         var renderVexFlowCanvas = function() {
-          console.log('rendering vex canvas');
           var myCanvas = document.getElementById('testDiv');
-          renderer = new Vex.Flow.Renderer(myCanvas, Vex.Flow.Renderer.Backends.CANVAS);
+          var renderer = new Vex.Flow.Renderer(myCanvas, Vex.Flow.Renderer.Backends.CANVAS);
 
-          artist = new VexTabDiv.Artist(10, 10, 600, {scale: 1});
-          vextab = new VexTab(artist);
+          var artist = new VexTabDiv.Artist(10, 10, 600, {scale: 1});
+          var vextab = new VexTab(artist);
 
-          vextab.parse(myCanvas.textContent);
+          vextab.parse(getVexTheoryScaleString());
           artist.render(renderer);
         };
 
